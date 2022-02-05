@@ -10,6 +10,7 @@
 nav{
   height:75px;
   background-color: rgb(56, 54, 52);
+  color: #000;
     
 }
 
@@ -17,9 +18,17 @@ nav ul li{
   list-style-type: none;
   
 }
-a {
+nav ul li a{
   color: white;
+  list-style-type: none;
   text-decoration: none;
+  
+}
+a {
+  text-decoration: none;
+  color: #000;
+  
+  
 }
 
 button{
@@ -38,6 +47,7 @@ button{
 .contents{
   margin:25px;
   padding:25px;
+  margin-bottom: 50px;
 }
 h1{
   margin-bottom:25px
@@ -47,4 +57,15 @@ h1{
   border-bottom: 3px solid #29b6f6;
   background-color: bisque;
   transition: border-bottom .5s ease-in-out;
+}
+p{
+  text-align: justify;
+  
+}
+.contents h3{
+  margin: 25px;
+}
+
+.article{
+  text-decoration: underline;
 }
