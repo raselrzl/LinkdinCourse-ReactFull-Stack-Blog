@@ -6,13 +6,13 @@ const app=express();
 
 
 app.use(bodyParser.json())
+
+
 app.get('/api/articles/:name',async(req, res)=>{
     try{
         const articleName=req.params.name;
-
         const client= await MongoClient.connect('mongodb://localhost:27017',{useNewUrlParser:true});    
-        const db=client.db('my-blog');
-    
+        const db=client.db('my-blog');    
         const articleInfo=await db.collection('articles').findOne({name:articleName});
         res.status(200).json(articleInfo)
         client.close();
@@ -30,11 +30,10 @@ app.post('/hello', (req, res)=>res.send(`Hello ${req.body.name}!`)) */
 app.post('/api/articles/:name/upvote', async(req, res)=>{
     try{
         const articleName=req.params.name;
+        const client= await MongoClient.connect('mongodb://localhost:27017',{useNewUrlParser:true});    
+        const db=client.db('my-blog');
 
-    const client= await MongoClient.connect('mongodb://localhost:27017',{useNewUrlParser:true});    
-    const db=client.db('my-blog');
-
-    const articleInfo=await db.collection('articles').findOne({name:articleName});
+        const articleInfo=await db.collection('articles').findOne({name:articleName});
 
     await db.collection('articles').updateOne({name:articleName},{
         '$set':{
@@ -54,13 +53,23 @@ app.post('/api/articles/:name/upvote', async(req, res)=>{
     res.status(200).send(`${articleName} now has ${articlesInfo[articleName].upvotes} upvotes!`) */
 })
 
-app.post('/api/articles/:name/add-comment', (req, res)=>{
+app.post('/api/articles/:name/add-comment', async(req, res)=>{
     const {username ,text}=req.body;
     const articleName=req.params.name;
+    const client= await MongoClient.connect('mongodb://localhost:27017',{useNewUrlParser:true});    
+     
+    await db.collection('articles').updateOne({name:articleName},{
+        '$set':{
+            comments:articleInfo.comments.concat({username, text})
+        },
+    });
+
+
+    const updatedArticleInfo=await db.collection('articles').findOne({name:articleName});
 
     articlesInfo[articleName].comments.push({username, text});
 
-    res.status(200).send(articlesInfo[articleName]);
+    res.status(200).json(updatedArticleInfo);
 })
 
 
