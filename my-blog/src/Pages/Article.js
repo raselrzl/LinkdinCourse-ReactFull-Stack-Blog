@@ -21,6 +21,7 @@ export default function Article({match}) {
     const fetchData=async()=>{
         const result=await fetch(`/api/articles/${name}`);
         const body=await result.json();
+        console.log(body);
         setArticleInfo(body);
     }
     fetchData();
