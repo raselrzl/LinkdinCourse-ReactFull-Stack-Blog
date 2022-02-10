@@ -5,20 +5,22 @@ import articleContent from './ArticleContent'
 import NotFound from './NotFound';
 import CommentsList from '../Components/CommentsList';
 import UpvotesSection from '../Components/UpvotesSection';
+import AddCommentForm from '../Components/AddCommentForm';
 
 
-export default function Article() {
+export default function Article({match}) {
+  const { name } = useParams();
+  const article=articleContent.find(article=>article.name===name);
   const [articleInfo, setArticleInfo]=useState({upvotes:0, comments: []});
 
  
 
-  const { name } = useParams();
-  const article=articleContent.find(article=>article.name===name);
+  
+  
   useEffect(()=>{
     const fetchData=async()=>{
         const result=await fetch(`/api/articles/${name}`);
         const body=await result.json();
-        console.log(body);
         setArticleInfo(body);
     }
     fetchData();
@@ -26,18 +28,16 @@ export default function Article() {
   if (!article) return <NotFound />
   const otherArticles=articleContent.filter(article=>article.name!==name);
   
-  return (<div className='contents'>
-  
-                <h1>{article.title}</h1>
-                <UpvotesSection articleName={name} upvotes={articleInfo.upvotes} setArticleInfo={setArticleInfo}/>
-                <p>This post has been upvoted {articleInfo.upvotes} times</p>
-                {article.content.map((pargraph, key)=>(
-                  <p key={key}>{pargraph}</p>
-                ))} 
-                <CommentsList comments={articleInfo.comments}/>
-                <h1>Other Articles</h1>
-                <AllArticles articles={otherArticles}/>
-                           
-        </div>
+  return (<>
+    <h1>{article.title}</h1>
+    <UpvotesSection articleName={name} upvotes={articleInfo.upvotes} setArticleInfo={setArticleInfo} />
+    {article.content.map((paragraph, key) => (
+        <p key={key}>{paragraph}</p>
+    ))}
+    <CommentsList comments={articleInfo.comments} />
+    <AddCommentForm articleName={name} setArticleInfo={setArticleInfo} />
+    <h3>Other Articles:</h3>
+    <AllArticles articles={otherArticles} />
+    </>
   );
 }
